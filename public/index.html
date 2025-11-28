@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>WordPong Scoring</title>
+</head>
+
+
+
+<body>
+	<h1>Word Scoring Test</h1>
+
+	<input id='wordInput' type='text' placeholder="type a word">
+	<button id='sendBtn'>Submit Word</button>
+
+	<p id='result'></p>
+
+
+
+	<!-- load socket.io from server -->
+	<script src='/socket.io/socket.io.js'></script>
+	<script>
+		// connect to server
+		const socket = io();
+
+		document.getElementById('sendBtn').onclick = () => {
+			const word = document.getElementById('wordInput').value;
+			socket.emit('submitWord', word);
+		};
+
+		// listen for score result
+		socket.on('scoreResult', (data) => {
+			document.getElementById('result').innerText =
+			`word: "${data.word}", score: ${data.score}`;
+		});
+	</script>
+</body>
+</html>
