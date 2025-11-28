@@ -1,19 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>WordPong Scoring</title>
+	<title>WordPong – Multiplayer Test</title>
+	<style>
+		body { font-family: sans-serif; }
+		#players { margin-top: 20px; }
+		#submissions { margin-top: 20px; }
+	</style>
 </head>
 
 
 
 <body>
-	<h1>Word Scoring Test</h1>
+	<h1>WordPong</h1>
 
-	<input id='wordInput' type='text' placeholder="type a word">
-	<button id='sendBtn'>Submit Word</button>
+	<div>
+		<input id='nameInput' type='text' placeholder="enter your name">
+		<button id='joinBtn'>Join Game</button>
+	</div>
 
-	<p id='result'></p>
+	<div id='game' style="display:none;">
+		<input id='wordInput' type='text' placeholder="type a word">
+		<button id='sendBtn'>Submit Word</button>
 
+		<h2>Players:</h2>
+		<ul id='players'></ul>
+
+		<h2>Submissions:</h2>
+		<ul id='submissions'></ul>
+	</div>
 
 
 	<!-- load socket.io from server -->
@@ -21,16 +36,46 @@
 	<script>
 		// connect to server
 		const socket = io();
+		let myName = "";
 
+		// join game
+		document.getElementById('joinBtn').onclick = () => {
+			const name = document.getElementById('nameInput').value.trim();
+			if (!name) return alert("enter your name");
+
+			myName = name;
+			socket.emit('joinGame', name);
+
+			document.getElementById('game').style.display = "block";
+		};		
+
+		// submit word
 		document.getElementById('sendBtn').onclick = () => {
-			const word = document.getElementById('wordInput').value;
+			const word = document.getElementById('wordInput').value.trim();
+			if (!word) return;
+			
 			socket.emit('submitWord', word);
+			document.getElementById('wordInput').value = "";
 		};
 
-		// listen for score result
-		socket.on('scoreResult', (data) => {
-			document.getElementById('result').innerText =
-			`word: "${data.word}", score: ${data.score}`;
+		// update player list
+		socket.on('updatePlayers', (players) => {
+			const ul = document.getElementById('players');
+			ul.innerHTML = "";
+			for (let id in players) {
+				const li = document.createElement('li');
+				li.textContent = `${players[id].name}: ${players[id].score} pts`;
+				ul.appendChild(li);
+			}
+		});
+
+
+		// show new submissions
+		socket.on('newSubmission', (submission) => {
+			const ul = document.getElementById('submissions');
+			const li = document.createElement('li');
+			li.textContent = `${submission.name} submitted "${submission.word}" → ${submission.score} pts`;
+			ul.appendChild(li);
 		});
 	</script>
 </body>
