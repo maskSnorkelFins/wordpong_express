@@ -1,0 +1,11 @@
+body {
+	margin: 30px;
+	font-family: serif;
+	background: #ccc;
+}
+#nameDiv {
+	display: block;
+}
+#gameDiv {
+	display: none;
+}
