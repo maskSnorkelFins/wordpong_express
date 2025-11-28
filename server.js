@@ -2,6 +2,7 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
+const CurrentWord = require("./CurrentWord");
 
 // setup
 const app = express();
@@ -55,21 +56,37 @@ io.on('connection', (socket) => {
 		const player = players[socket.id];
 		if (!player) return; // safety check
 
-		const wordScore = scoreWord(word);
-		player.score += wordScore;
+		const prevWord = submissions.length > 0 ? submissions[submissions.length-1].word : "";
+  		const currentWordObj = new CurrentWord(word, prevWord);
+		
+		// const wordScore = scoreWord(word);
+		// player.score += wordScore;
 
 		const submission = {
 			playerId: socket.id,
-			name: player.name,
-			word,
-			score: wordScore
+			// name: player.name,
+			name: players[socket.id].name,
+			// word,
+			currentWordObj
 		};
 		submissions.push(submission);
+		
+		// update player score
+		players[socket.id].score += currentWordObj.score;
 
-		io.emit('newSubmission', submission); // broadcast submission to all clients
-		io.emit('updatePlayers', players); // broadcast updated player scores to all clients
+		// io.emit('newSubmission', submission); // broadcast submission to all clients
+		// io.emit('updatePlayers', players); // broadcast updated player scores to all clients
 		// socket.emit('scoreResult', { word, score }); // send result back ONLY to sender client
 		// socket.broadcast.emit(event, data) // send to all clients EXCEPT the sender
+
+		// send back to submitting player
+		socket.emit('scoreResult', currentWordObj);
+
+		// broadcast to everyone else
+		socket.broadcast.emit('newSubmission', currentWordObj); // sending too much info
+
+		// update all player scores
+		io.emit('updatePlayers', players);
 	});
 
 
