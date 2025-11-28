@@ -3,7 +3,6 @@
 
 
 // letter lists
-{
 const VOWELS = "aeiou";
 const VOWELS_WITH_Y = "aeiouy";
 const CONSONANTS = "bcdfghjklmnpqrstvwxyz";
@@ -17,7 +16,17 @@ const KEYBOARD_RIGHT = "yuiophjklnm";
 const TALLS = "bdfhklt";
 const HANGS = "gjpqy";
 const SHORTS = "aceimnorsuvwxz";
+
+
+// stats
+function score(word) {
+	let sc = 0;
+	for (let i = 0; i < word.length; i++) {
+		sc += word.charCodeAt(i) - 96;
+	}
+	return sc;
 }
+
 
 // create boolean array for consonant(true) / vowel(false)
 function cvPattern(word) {
@@ -52,16 +61,6 @@ function yConsonant(word, i) {
 	// consonant: year, yellow, yes, young, beyond, lawyer
 	// vowel: frying, undying, annoyingly, candy, monkey, myth, bicycle
 		// pylon, tyrant, dynamite, system, typical, pyramid, toy, day, mystery
-}
-
-
-// stats
-function score(word) {
-	let sc = 0;
-	for (let i = 0; i < word.length; i++) {
-		sc += word.charCodeAt(i) - 96;
-	}
-	return sc;
 }
 
 

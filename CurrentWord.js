@@ -4,7 +4,9 @@ const { score, cvPattern, tallyDoubles, tallySingleTriples, weighCV, streak, che
 
 
 function CurrentWord(word, prev) {
-	console.log("\n\nprev: " + prev + "\ncurr: " + word);
+	if (!prev) prev = "";
+	// console.log("\n\nprev: " + prev + "\ncurr: " + word);
+	console.log(`\n\nprev: ${prev}\ncurr: ${word}`);
 
 	// stats
 	this.word = word;
