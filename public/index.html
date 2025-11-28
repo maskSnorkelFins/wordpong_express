@@ -5,7 +5,8 @@
 	<style>
 		body { font-family: sans-serif; }
 		#players { margin-top: 20px; }
-		#submissions { margin-top: 20px; }
+		#patterns { margin-top: 20px; }
+		#wordLog { margin-top: 20px; }
 	</style>
 </head>
 
@@ -26,8 +27,11 @@
 		<h2>Players:</h2>
 		<ul id='players'></ul>
 
-		<h2>Submissions:</h2>
-		<ul id='submissions'></ul>
+		<h2>Patterns:</h2>
+		<ul id='patterns'></ul>
+
+		<h2>Word Log:</h2>
+		<ul id='wordLog'></ul>
 	</div>
 
 
@@ -69,10 +73,30 @@
 			}
 		});
 
+		// player receives pattern list
+		socket.on('patternList', (submission) => {
+			const ul = document.getElementById('patterns');
+			const li = document.createElement('li');
 
-		// show new submissions
+			// extract only true patterns
+			const truePatterns = Object.keys(submission).filter(key => {
+				return !['word', 'score', 'name', 'playerId'].includes(key) && submission[key] === true;
+			});
+
+			if (truePatterns.length > 0) {
+				li.innerHTML = `<strong>${submission.name || "You"}</strong> submitted "${submission.word}" → ${submission.score} pts<br/>Patterns:<br/>${truePatterns.join("<br/>")}`;
+			} else {
+				li.innerHTML = `${submission.name || "You"} submitted "${submission.word}" → ${submission.score} pts<br/>No patterns matched.`;
+			}
+
+			ul.appendChild(li);
+			ul.scrollTop = ul.scrollHeight;
+		});
+
+
+		// show word log
 		socket.on('newSubmission', (submission) => {
-			const ul = document.getElementById('submissions');
+			const ul = document.getElementById('wordLog');
 			const li = document.createElement('li');
 			li.textContent = `${submission.name} submitted "${submission.word}" → ${submission.score} pts`;
 			ul.appendChild(li);
