@@ -1,13 +1,13 @@
-// imports
+// setup express server
 const express = require('express');
-const http = require('http');
+const app = express();
+
+const http = require('http').createServer(app); // CHANGED 20251128
 const { Server } = require('socket.io');
+const io = require('socket.io')(http); // CHANGED 20251128
+
 const CurrentWord = require("./CurrentWord");
 
-// setup
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
 
 
 // serve static files from /public
@@ -86,6 +86,4 @@ function scoreWord(word) {
 
 // start server
 const PORT = process.env.PORT || 3030;
-server.listen(PORT, () => {
-	console.log("server listening on port", PORT);
-});
+http.listen(PORT, () => console.log('Server running on port 3030')); // GPT REWRITE 20251128

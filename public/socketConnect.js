@@ -1,5 +1,5 @@
 // connect to server
-const socket = io();
+// const socket = io();
 let myName = "";
 document.getElementById('nameInput').focus();
 

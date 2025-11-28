@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<title>WordPong – Phaser Build</title>
+	<meta charset="UTF-8" />
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+	<script type='text/javascript' src='./Scene1.js'></script>
+	<script type='text/javascript' src='./Scene2.js'></script>
+	<link rel='stylesheet' href='./style.css'>
+</head>
+
+
+
+<body>
+	<h1>WordPong – Phaser Build</h1>
+
+	<div id='nameDiv'>
+		<input id='nameInput' type='text' placeholder="enter your name">
+		<!--<button id='joinBtn'>Join Game</button>-->
+	</div>
+
+	<div id='gameDiv'>
+		<input id='wordInput' type='text' placeholder="type a word">
+		<!--<button id='sendBtn'>Submit Word</button>-->
+
+		<h2>Players</h2>
+		<ul id='players'></ul>
+
+		<h2>Patterns</h2>
+		<div id='wordDisplay'></div>
+		<ul id='patternList'></ul>
+
+		<h2>Word Log</h2>
+		<ul id='wordLog'></ul>
+	</div>
+
+
+
+	<!-- load socket.io from server -->
+	<script src='/socket.io/socket.io.js'></script>
+	<script src='./socketConnect.js'></script>
+</body>
+</html>
