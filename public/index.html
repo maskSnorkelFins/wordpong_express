@@ -4,6 +4,7 @@
 	<title>WordPong – Multiplayer Test</title>
 	<style>
 		body { font-family: sans-serif; }
+		#gameDiv { display: none; }
 		#players { margin-top: 20px; }
 		#patterns { margin-top: 20px; }
 		#wordLog { margin-top: 20px; }
@@ -15,92 +16,30 @@
 <body>
 	<h1>WordPong</h1>
 
-	<div>
+	<div id='nameDiv'>
 		<input id='nameInput' type='text' placeholder="enter your name">
-		<button id='joinBtn'>Join Game</button>
+		<!--<button id='joinBtn'>Join Game</button>-->
 	</div>
 
-	<div id='game' style="display:none;">
+	<div id='gameDiv'>
 		<input id='wordInput' type='text' placeholder="type a word">
-		<button id='sendBtn'>Submit Word</button>
+		<!--<button id='sendBtn'>Submit Word</button>-->
 
-		<h2>Players:</h2>
+		<h2>Players</h2>
 		<ul id='players'></ul>
 
-		<h2>Patterns:</h2>
-		<ul id='patterns'></ul>
+		<h2>Patterns</h2>
+		<div id='wordDisplay'></div>
+		<ul id='patternList'></ul>
 
-		<h2>Word Log:</h2>
+		<h2>Word Log</h2>
 		<ul id='wordLog'></ul>
 	</div>
 
 
+
 	<!-- load socket.io from server -->
 	<script src='/socket.io/socket.io.js'></script>
-	<script>
-		// connect to server
-		const socket = io();
-		let myName = "";
-
-		// join game
-		document.getElementById('joinBtn').onclick = () => {
-			const name = document.getElementById('nameInput').value.trim();
-			if (!name) return alert("enter your name");
-
-			myName = name;
-			socket.emit('joinGame', name);
-
-			document.getElementById('game').style.display = "block";
-		};		
-
-		// submit word
-		document.getElementById('sendBtn').onclick = () => {
-			const word = document.getElementById('wordInput').value.trim();
-			if (!word) return;
-			
-			socket.emit('submitWord', word);
-			document.getElementById('wordInput').value = "";
-		};
-
-		// update player list
-		socket.on('updatePlayers', (players) => {
-			const ul = document.getElementById('players');
-			ul.innerHTML = "";
-			for (let id in players) {
-				const li = document.createElement('li');
-				li.textContent = `${players[id].name}: ${players[id].score} pts`;
-				ul.appendChild(li);
-			}
-		});
-
-		// player receives pattern list
-		socket.on('patternList', (submission) => {
-			const ul = document.getElementById('patterns');
-			const li = document.createElement('li');
-
-			// extract only true patterns
-			const truePatterns = Object.keys(submission).filter(key => {
-				return !['word', 'score', 'name', 'playerId'].includes(key) && submission[key] === true;
-			});
-
-			if (truePatterns.length > 0) {
-				li.innerHTML = `<strong>${submission.name || "You"}</strong> submitted "${submission.word}" → ${submission.score} pts<br/>Patterns:<br/>${truePatterns.join("<br/>")}`;
-			} else {
-				li.innerHTML = `${submission.name || "You"} submitted "${submission.word}" → ${submission.score} pts<br/>No patterns matched.`;
-			}
-
-			ul.appendChild(li);
-			ul.scrollTop = ul.scrollHeight;
-		});
-
-
-		// show word log
-		socket.on('newSubmission', (submission) => {
-			const ul = document.getElementById('wordLog');
-			const li = document.createElement('li');
-			li.textContent = `${submission.name} submitted "${submission.word}" → ${submission.score} pts`;
-			ul.appendChild(li);
-		});
-	</script>
+	<script src='./socketConnect.js'></script>
 </body>
 </html>

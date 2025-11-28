@@ -2,22 +2,23 @@
   "name": "wordpong_express",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "keywords": [],
+  "homepage": "https://github.com/maskSnorkelFins/wordpong_express#readme",
+  "bugs": {
+    "url": "https://github.com/maskSnorkelFins/wordpong_express/issues"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/maskSnorkelFins/wordpong_express.git"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
+  "author": "",
   "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/maskSnorkelFins/wordpong_express/issues"
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
-  "homepage": "https://github.com/maskSnorkelFins/wordpong_express#readme",
   "dependencies": {
     "express": "^5.1.0",
     "socket.io": "^4.8.1"
