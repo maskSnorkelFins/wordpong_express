@@ -67,8 +67,9 @@ io.on('connection', (socket) => {
 		submissions.push(submission);
 
 		io.emit('newSubmission', submission); // broadcast submission to all clients
-		io.emit('updatePlayers', players); // broadcast updated player scores
-		// socket.emit('scoreResult', { word, score }); // send result back to client
+		io.emit('updatePlayers', players); // broadcast updated player scores to all clients
+		// socket.emit('scoreResult', { word, score }); // send result back ONLY to sender client
+		// socket.broadcast.emit(event, data) // send to all clients EXCEPT the sender
 	});
 
 
