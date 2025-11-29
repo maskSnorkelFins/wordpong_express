@@ -2,79 +2,19 @@
 <html lang='en'>
 <head>
 	<title>WordPong – Phaser Build</title>
-	<meta charset="UTF-8" />
+	<meta charset='UTF-8' />
 
-	<script src="/socket.io/socket.io.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
-	<script type='text/javascript' src='./Scene1.js'></script>
-	<script type='text/javascript' src='./Scene2.js'></script>
+	<script src='/socket.io/socket.io.js'></script>
+
+	<script src='/phaser.js'></script>
+	<script type='text/javascript' src='./BootScene.js'></script>
+	<script type='text/javascript' src='./GameScene.js'></script>
 	<link rel='stylesheet' href='./style.css'>
 </head>
 
 
-
 <body>
-
-	<!-- <h1>WordPong – Phaser Build</h1>
-
-	<div id='nameDiv'>
-		<input id='nameInput' type='text' placeholder="enter your name">
-	</div>
-
-	<div id='gameDiv'>
-		<input id='wordInput' type='text' placeholder="type a word">
-
-		<h2>Players</h2>
-		<ul id='players'></ul>
-
-		<h2>Patterns</h2>
-		<div id='wordDisplay'></div>
-		<ul id='patternList'></ul>
-
-		<h2>Word Log</h2>
-		<ul id='wordLog'></ul>
-	</div> -->
-	<script type='text/javascript'>
-		// open socket connection
-		const socket = io();
-		window.socket = socket; // GPT ADDED 20251128, FIGURE OUT HOW TO PASS SOCKET AS SCENE DATA
-		
-
-		const GAME_SETTINGS = {
-			gameWidth: window.innerWidth,
-			gameHeight: window.innerHeight,
-		};
-		console.log(`Window ${GAME_SETTINGS.gameWidth} x ${GAME_SETTINGS.gameHeight}`);
-
-		var config = {
-			type: Phaser.AUTO, //Phaser.WEBGL, or Phaser.CANVAS if WEBGL not available
-			width: GAME_SETTINGS.gameWidth,
-			height: GAME_SETTINGS.gameHeight,
-			backgroundColor: 0xcccccc, // light gray
-			physics: {
-				default: 'arcade',
-				arcade: {
-					gravity: { x: 0, y: 0 },
-					debug: false,
-					fps: 60,
-					timeScale: 1,
-					// useTree: true, // spatial partitioning
-					// maxVelocity: 10000,
-					// overlapBias: 8, // collision separation, default = 4
-					// steps: 2 // improves accuracy, default = 1
-				}
-			},
-			scene: [Scene1, Scene2]
-		};
-
-		// instantiate game
-		const game = new Phaser.Game(config);
-
-	</script>
-
-
-	<!-- load socket.io from server -->
-	<script src='/socket.io/socket.io.js'></script>
-	<!--<script src='./socketConnect.js'></script>-->
+	<!-- instantiate phaser -->
+	<script src='./phaserSetup.js'></script>
 </body>
 </html>
