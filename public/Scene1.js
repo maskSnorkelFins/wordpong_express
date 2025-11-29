@@ -12,8 +12,9 @@ class Scene1 extends Phaser.Scene {
 
     create() {
         this.add.text(20, 20, "Loading game ...");
+		this.scene.start('playGame');
 
-        // start Scene2 and pass the shared socket
+		// start Scene2 and pass the shared socket
         // this.scene.start('playGame', { socket: this.socket });
 		// this.scene.start('playGame', { socket: this.socket || window.socket }); // GPT SUGGESTION 20251128
     }
