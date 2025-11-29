@@ -31,7 +31,7 @@ var config = {
 			// steps: 2 // improves accuracy, default = 1
 		}
 	},
-	scene: [Scene1, Scene2]
+	scene: [BootScene, GameScene]
 };
 
 // instantiate game

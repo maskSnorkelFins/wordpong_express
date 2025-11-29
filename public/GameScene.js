@@ -1,6 +1,6 @@
-class Scene2 extends Phaser.Scene {
+class GameScene extends Phaser.Scene {
 	constructor() {
-		super('playGame');
+		super('GameScene');
 	}
 
 	// init(data) { // GPT ADDED (DATA) AND THIS.SOCKET, THEN REMOVED – 20251128
@@ -30,14 +30,28 @@ class Scene2 extends Phaser.Scene {
 
 	preload() {
 		// images
-		this.load.image('table', 'assets/table.jpg');
-		this.load.image('pBox', './assets/playerBox_sm.png');
-		this.load.image('oBox1', './assets/opponentBox_sm.png');
-		this.load.image('oBox2', './assets/opponentBox_sm.png');
-		this.load.image('oBox3', './assets/opponentBox_sm.png');
+		this.load.image('table', 'assets/images/table.jpg');
+		this.load.image('pBox', './assets/images/playerBox_sm.png');
+		this.load.image('oBox1', './assets/images/opponentBox_sm.png');
+		this.load.image('oBox2', './assets/images/opponentBox_sm.png');
+		this.load.image('oBox3', './assets/images/opponentBox_sm.png');
 		// sounds
-		// this.load.audio('newball', './assets/newball.mp3');
-		// this.load.audio('dead', '/.assets/dead.mp3');
+		this.load.audio('type0', './assets/sounds/type0.mp3');
+		this.load.audio('type1', './assets/sounds/type1.mp3');
+		this.load.audio('type2', './assets/sounds/type2.mp3');
+		this.load.audio('type3', './assets/sounds/type3.mp3');
+		this.load.audio('type4', './assets/sounds/type4.mp3');
+		this.load.audio('type5', './assets/sounds/type5.mp3');
+		this.load.audio('type6', './assets/sounds/type6.mp3');
+		this.load.audio('type7', './assets/sounds/type7.mp3');
+		this.load.audio('type8', './assets/sounds/type8.mp3');
+		this.load.audio('type9', './assets/sounds/type9.mp3');
+		this.load.audio('del0', './assets/sounds/del0.mp3');
+		this.load.audio('del1', './assets/sounds/del1.mp3');
+		this.load.audio('del2', './assets/sounds/del2.mp3');
+		this.load.audio('del3', './assets/sounds/del3.mp3');
+		this.load.audio('del4', './assets/sounds/del4.mp3');
+		this.load.audio('enterMp3', './assets/sounds/enter.mp3');
 	}
 
 
@@ -61,8 +75,17 @@ class Scene2 extends Phaser.Scene {
 
 
 		// sounds
-		// this.newballSound = this.sound.add('newball');
-		// this.deadSound = this.sound.add('dead');
+		this.enterSound = this.sound.add('enterMp3');
+		this.typeSounds = [];
+		for (let i = 0; i <= 9; i++) {
+			this.typeSounds.push(this.sound.add('type' + i));
+		}
+		this.prevTypeSound = this.typeSounds.length-1;
+		this.delSounds = [];
+		for (let i = 0; i <= 4; i++) {
+			this.delSounds.push(this.sound.add('del' + i));
+		}
+		this.prevDelSound = this.delSounds.length-1;
 
 		
 		// images
@@ -75,15 +98,24 @@ class Scene2 extends Phaser.Scene {
 
 		// text
 		console.log(this.gameWidthDIV2, this.gameHeightDIV2);
-		this.propText = this.add.text(this.gameWidthDIV2, this.gameHeightDIV2, 'type to begin',
-			{ fontSize: '30px', fontFamily: "Arial", fill: '#000', backgroundColor: "#ccc", align: 'center' }
-		).setOrigin(0.5, 0.5); // center-align text
-		this.scoreText = this.add.text(16, 16, 'Score: ' + this.score,
-			{ fontSize: '20px', fontFamily: "Arial", fill: '#000' }
-		);
-		this.timeText = this.add.text(200, 16, "Time: 0",
-			{ fontSize: '20px', fontFamily: "Arial", fill: '#000' }
-		);
+		// this.propText = this.add.text(this.gameWidthDIV2, this.gameHeightDIV2, 'type to begin',
+		// 	{ fontSize: '30px', fontFamily: "Arial", fill: '#000', backgroundColor: "#ccc", align: 'center' }
+		// ).setOrigin(0.5, 0.5); // center-align text
+		this.propText = this.add.bitmapText(this.gameWidthDIV2, this.gameHeightDIV2, 'typewriter', // font key
+			'type to begin', 40).setOrigin(0.5, 0.5);
+
+		// this.scoreText = this.add.text(16, 16, 'Score: ' + this.score,
+		// 	{ fontSize: '20px', fontFamily: "Arial", fill: '#000' }
+		// );
+		this.scoreText = this.add.bitmapText(16, 16, 'typewriter',
+			'Score: 0', 25).setTintFill(0xffffff);
+
+		// this.timeText = this.add.text(200, 16, "Time: 0",
+		// 	{ fontSize: '20px', fontFamily: "Arial", fill: '#000' }
+		// );
+		this.timeText = this.add.bitmapText(200, 16, 'typewriter',
+			'Time: 0', 25).setTintFill(0xffffff);
+
 
 
 		// event listeners
@@ -156,12 +188,27 @@ class Scene2 extends Phaser.Scene {
 
 		// if (code.startsWith('key') && code.length === 4) {
 		if (code.startsWith('key')) {
+			let rand;
+			do {
+				rand = Phaser.Math.Between(0, this.typeSounds.length - 1);
+			} while (rand === this.prevTypeSound);
+			this.prevTypeSound = rand;
+			this.typeSounds[rand].play();
+
 			this.currentTypedChars += code.charAt(3);
 			this.propWord += code.charAt(3); // NECESSARY?
 		} else if (code === 'backspace') {
+			let rand;
+			do {
+				rand = Phaser.Math.Between(0, this.delSounds.length - 1);
+			} while (rand === this.prevDelSound);
+			this.prevDelSound = rand;
+			this.delSounds[rand].play({ volume: 0.15 });
+
 			this.currentTypedChars = this.currentTypedChars.slice(0, -1);
 			this.propWord = this.propWord.slice(0, -1); // NECESSARY?
 		} else if (code === 'enter' || code === 'space') {
+			this.enterSound.play({ volume: 0.1 });
 			//
 			socket.emit('submitWord', this.propWord);// EVALUATE WORD
 			//
