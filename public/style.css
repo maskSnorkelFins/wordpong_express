@@ -1,11 +1,10 @@
+html, body, canvas {
+	margin: 0;
+	padding: 0;
+}
 body {
-	margin: 30px;
 	font-family: serif;
-	background: #ccc;
 }
-#nameDiv {
+canvas {
 	display: block;
-}
-#gameDiv {
-	display: none;
 }

@@ -30,7 +30,7 @@ class Scene2 extends Phaser.Scene {
 
 	preload() {
 		// images
-		this.load.image('sky', 'assets/sky.png');
+		this.load.image('table', 'assets/table.jpg');
 		this.load.image('pBox', './assets/playerBox_sm.png');
 		this.load.image('oBox1', './assets/opponentBox_sm.png');
 		this.load.image('oBox2', './assets/opponentBox_sm.png');
@@ -61,12 +61,12 @@ class Scene2 extends Phaser.Scene {
 
 
 		// sounds
-		this.newballSound = this.sound.add('newball');
-		this.deadSound = this.sound.add('dead');
+		// this.newballSound = this.sound.add('newball');
+		// this.deadSound = this.sound.add('dead');
 
 		
 		// images
-		this.add.image(0, 0, 'sky').setOrigin(0, 0) // coords based on 0,0 top left
+		this.add.image(0, 0, 'table').setOrigin(0, 0) // coords based on 0,0 top left
 		this.add.image(this.gameWidthDIV2, this.gameHeightDIV2, 'pBox');
 		this.add.image(this.gameWidthDIV2-this.gameWidthDIV4, 150, 'oBox1');
 		this.add.image(this.gameWidthDIV2, 75, 'oBox2');
