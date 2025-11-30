@@ -1,6 +1,7 @@
 class GameScene extends Phaser.Scene {
-	constructor() {
+	constructor(socket) {
 		super('GameScene');
+		this.socket = socket;
 	}
 
 	// init(data) { // GPT ADDED (DATA) AND THIS.SOCKET, THEN REMOVED – 20251128
@@ -12,9 +13,9 @@ class GameScene extends Phaser.Scene {
 		this.propWord = "";
 		this.score = 0;
 		this.elapsedTime = 0;
-		this.propText = "";
-		this.scoreText = "Score: 0";
-		this.timeText = "Time: 0";
+		this.propInput = "";
+		this.scoreOutput;
+		this.timeOutput;
 		this.timer;
 
 		// responsive design
@@ -30,7 +31,7 @@ class GameScene extends Phaser.Scene {
 
 	preload() {
 		// images
-		this.load.image('table', 'assets/images/table.jpg');
+		this.load.image('table', './assets/images/table.jpg');
 		this.load.image('pBox', './assets/images/playerBox_sm.png');
 		this.load.image('oBox1', './assets/images/opponentBox_sm.png');
 		this.load.image('oBox2', './assets/images/opponentBox_sm.png');
@@ -58,11 +59,9 @@ class GameScene extends Phaser.Scene {
 
 	create() {
 		// socket
-		this.socket = window.socket;
-		if (!this.socket) {
-			console.log("socket not defined!");
-			return;
-		}
+		this.socket.on('connect', () => {
+			console.log(`connected: ${this.socket.id}`);
+		});
 		this.socket.on('updatePlayers', players => {
             console.log(players);
         });
@@ -101,20 +100,20 @@ class GameScene extends Phaser.Scene {
 		// this.propText = this.add.text(this.gameWidthDIV2, this.gameHeightDIV2, 'type to begin',
 		// 	{ fontSize: '30px', fontFamily: "Arial", fill: '#000', backgroundColor: "#ccc", align: 'center' }
 		// ).setOrigin(0.5, 0.5); // center-align text
-		this.propText = this.add.bitmapText(this.gameWidthDIV2, this.gameHeightDIV2, 'typewriter', // font key
-			'type to begin', 40).setOrigin(0.5, 0.5);
+		this.wordInput = this.add.bitmapText(this.gameWidthDIV2, this.gameHeightDIV2, 'typewriter', // font key
+			"type to begin", 40).setOrigin(0.5, 0.5);
 
 		// this.scoreText = this.add.text(16, 16, 'Score: ' + this.score,
 		// 	{ fontSize: '20px', fontFamily: "Arial", fill: '#000' }
 		// );
-		this.scoreText = this.add.bitmapText(16, 16, 'typewriter',
-			'Score: 0', 25).setTintFill(0xffffff);
+		this.scoreOutput = this.add.bitmapText(16, 16, 'typewriter',
+			"score: 0", 25).setTintFill(0xffffff);
 
 		// this.timeText = this.add.text(200, 16, "Time: 0",
 		// 	{ fontSize: '20px', fontFamily: "Arial", fill: '#000' }
 		// );
-		this.timeText = this.add.bitmapText(200, 16, 'typewriter',
-			'Time: 0', 25).setTintFill(0xffffff);
+		this.timeOutput = this.add.bitmapText(200, 16, 'typewriter',
+			"time: 0", 25).setTintFill(0xffffff);
 
 
 
@@ -122,7 +121,7 @@ class GameScene extends Phaser.Scene {
 		// keydown
 		this.input.keyboard.on('keydown', (event) => this.handleKey(event.code));
 		// click
-		this.input.on('pointerdown', this.startGame, this);
+		// this.input.on('pointerdown', this.startGame, this);
 
 
 		// trackpad
@@ -139,13 +138,12 @@ class GameScene extends Phaser.Scene {
 
 
 	update() {
-		// this.propText.setText(this.currentTypedChars);
-		this.propText.setText(this.propWord); // set text
-		this.scoreText.setText("Score: " + this.score);
-		this.timeText.setText("Time: " + this.elapsedTime);
+		this.wordInput.setText(this.propWord); // set text
+		this.scoreOutput.setText("score: " + this.score);
+		this.timeOutput.setText("time: " + this.elapsedTime);
 
 		// // check win/lose
-		// if (this.currentTypedChars.length > 20) {
+		// if (this.propWord.length > 20) {
 		// 	this.endGame();
 		// }
 	}
@@ -168,7 +166,7 @@ class GameScene extends Phaser.Scene {
 				delay: 1000,
 				callback: () => {
 					this.elapsedTime++;
-					this.timeText.setText("Time: " + this.elapsedTime);
+					this.timeOutput.setText("Time: " + this.elapsedTime);
 				},
 				callbackScope: this,
 				loop: true
@@ -179,7 +177,10 @@ class GameScene extends Phaser.Scene {
 
 
 	handleKey(code) {
-		if (!this.gameRunning) return;
+		if (!this.gameRunning) this.startGame();
+
+		if (this.propWord === "type to begin") this.propWord = "";
+
 
 		code = code.toLowerCase();
 		console.log(`event.code: ${code}`);
@@ -194,9 +195,7 @@ class GameScene extends Phaser.Scene {
 			} while (rand === this.prevTypeSound);
 			this.prevTypeSound = rand;
 			this.typeSounds[rand].play();
-
-			this.currentTypedChars += code.charAt(3);
-			this.propWord += code.charAt(3); // NECESSARY?
+			this.propWord += code.charAt(3);
 		} else if (code === 'backspace') {
 			let rand;
 			do {
@@ -204,9 +203,7 @@ class GameScene extends Phaser.Scene {
 			} while (rand === this.prevDelSound);
 			this.prevDelSound = rand;
 			this.delSounds[rand].play({ volume: 0.15 });
-
-			this.currentTypedChars = this.currentTypedChars.slice(0, -1);
-			this.propWord = this.propWord.slice(0, -1); // NECESSARY?
+			this.propWord = this.propWord.slice(0, -1);
 		} else if (code === 'enter' || code === 'space') {
 			this.enterSound.play({ volume: 0.1 });
 			//

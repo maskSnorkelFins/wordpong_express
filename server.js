@@ -6,6 +6,7 @@ const http = require('http').createServer(app); // CHANGED 20251128
 const { Server } = require('socket.io');
 const io = require('socket.io')(http); // CHANGED 20251128
 
+const fs = require('fs/promises'); // to load words.txt
 const CurrentWord = require("./CurrentWord");
 
 
@@ -15,9 +16,22 @@ app.use(express.static('public'));
 
 
 
+// dictionary
+const DICTIONARY = new Set();
+(async () => {
+	await loadDictionary();
+	console.log(`${DICTIONARY.size} words loaded`);
+	
+	// validation
+	console.log("Loaded words:", DICTIONARY.size);
+	console.log("First 10 words:", Array.from(DICTIONARY).slice(0,10));
+	console.log("Does 'cat' exist?", DICTIONARY.has("cat"));
+})();
+
+
 // game state
-let players = {}; // { socket.id: {name, score} }
-let submissions = []; // [ {playerId, word, score} ]
+const players = {}; // { socket.id: {name, score} }
+const submissions = []; // [ {playerId, word, score} ]
 
 
 // handle socket connections
@@ -42,6 +56,14 @@ io.on('connection', (socket) => {
 	socket.on('submitWord', (word) => {
 		const player = players[socket.id];
 		if (!player) return; // safety check
+
+		console.log("socket.on('submitWord') passed the safety check");
+		if (!DICTIONARY.has(word.toLowerCase())) {
+			console.log(`${word} NOT IN DICTIONARY`);
+			return;
+		} else {
+			console.log(`${word} in dictionary`);
+		}
 
 		const prevWord = submissions.length > 0 ? submissions[submissions.length-1].word : "";
   		const currentWordObj = new CurrentWord(word, prevWord);
@@ -84,6 +106,19 @@ function scoreWord(word) {
 }
 
 
+async function loadDictionary() {
+    const text = await fs.readFile('./public/assets/words.txt', 'utf8');
+	for (const line of text.split("\n")) {
+		const word = line.replace(/^\uFEFF/, '')      // remove BOM
+			.split(',')[0] // remove comma + column
+			.replace(/\r/g, '') // remove carriage return
+			.trim()
+			.toLowerCase();
+		if (word) DICTIONARY.add(word);
+	}
+}
+
+
 // start server
 const PORT = process.env.PORT || 3030;
-http.listen(PORT, () => console.log('Server running on port 3030')); // GPT REWRITE 20251128
+http.listen(PORT, () => console.log('Server running on port 3030'));

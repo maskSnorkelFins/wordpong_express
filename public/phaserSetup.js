@@ -1,6 +1,6 @@
 // open socket connection
 const socket = io();
-window.socket = socket; // GPT ADDED 20251128, FIGURE OUT HOW TO PASS SOCKET AS SCENE DATA
+// window.socket = socket; // GPT ADDED 20251128, FIGURE OUT HOW TO PASS SOCKET AS SCENE DATA
 
 
 const GAME_SETTINGS = {
@@ -31,7 +31,7 @@ var config = {
 			// steps: 2 // improves accuracy, default = 1
 		}
 	},
-	scene: [BootScene, GameScene]
+	scene: [BootScene, new LobbyScene(socket), new GameScene(socket)]
 };
 
 // instantiate game

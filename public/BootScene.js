@@ -14,10 +14,6 @@ class BootScene extends Phaser.Scene {
 
 	create() {
         this.add.text(20, 20, "Loading game ...");
-		this.scene.start('GameScene');
-
-		// start Scene2 and pass the shared socket – GPT SUGGESTION 20251128
-        // this.scene.start('playGame', { socket: this.socket });
-		// this.scene.start('playGame', { socket: this.socket || window.socket });
+		this.scene.start('LobbyScene');
     }
 }
