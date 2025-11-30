@@ -6,7 +6,7 @@ class LobbyScene extends Phaser.Scene {
 
 	init() {
 		// state
-		this.playerName = "enter your name";
+		this.playerName = "type your name";
 
 		// responsive design
 		this.gameWidth = GAME_SETTINGS.gameWidth;
@@ -67,11 +67,11 @@ class LobbyScene extends Phaser.Scene {
 
 
 		console.log(this.gameWidthDIV2, this.gameHeightDIV2);
-		// this.playerNameInput = this.add.text(this.gameWidthDIV2, this.gameHeightDIV2, 'type to begin',
-		// 	{ fontSize: '30px', fontFamily: "Arial", fill: '#000', backgroundColor: "#ccc", align: 'center' }
-		// ).setOrigin(0.5, 0.5); // center-align text
-		this.playerNameInput = this.add.bitmapText(this.gameWidthDIV2, this.gameHeightDIV2, 'typewriter', // font key
-			"enter your name", 40).setOrigin(0.5, 0.5);
+		this.playerNameInput = this.add.text(this.gameWidthDIV2, this.gameHeightDIV2, this.playerName,
+			{ fontSize: '36px', fontFamily: "Newsreader36", fill: '#000', align: 'center' }
+		).setOrigin(0.5, 0.5); // center-align text
+		// this.playerNameInput = this.add.bitmapText(this.gameWidthDIV2, this.gameHeightDIV2, 'typewriter', // font key
+		// 	this.playerName, 32).setOrigin(0.5, 0.5);
 
 
 		// event listeners
@@ -84,7 +84,7 @@ class LobbyScene extends Phaser.Scene {
 	}
 
 	handleKey(code) {
-		if (this.playerName === "enter your name") this.playerName = "";
+		if (this.playerName === "type your name") this.playerName = "";
 
 		code = code.toLowerCase();
 		console.log(`event.code: ${code}`);

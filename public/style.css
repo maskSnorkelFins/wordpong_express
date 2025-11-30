@@ -8,3 +8,19 @@ body {
 canvas {
 	display: block;
 }
+@font-face {
+    font-family: 'Newsreader';
+    src: url('./assets/fonts/Newsreader-Variable.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+} @font-face {
+    font-family: 'Newsreader24'; /* you choose a convenient name */
+    src: url('./assets/fonts/Newsreader_24pt-Medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+} @font-face {
+    font-family: 'Newsreader36'; /* you choose a convenient name */
+    src: url('./assets/fonts/Newsreader_36pt-Medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}

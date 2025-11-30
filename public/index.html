@@ -17,5 +17,29 @@
 <body>
 	<!-- instantiate phaser -->
 	<script src='./phaserSetup.js'></script>
+	<script>
+		// // ensure font loads before instantiating Phaser
+		// document.fonts.load("16px 'Newsreader'").then(() => {
+		// 	console.log("font loaded: Newsreader");
+
+		// 	let script = document.createElement('script');
+		// 	script.src = 'phaserSetup.js';
+		// 	script.type = 'text/javascript';
+		// 	document.body.appendChild(script);
+		// });
+
+		Promise.all([
+			document.fonts.load("16px 'Newsreader'"),
+			document.fonts.load("24px 'Newsreader24'"),
+			document.fonts.load("36px 'Newsreader36'")
+		]).then(() => {
+			console.log("fonts loaded: Newsreader-Variable, 24, 36");
+
+			let script = document.createElement('script');
+			script.src = 'phaserSetup.js';
+			script.type = 'text/javascript';
+			document.body.appendChild(script);
+		});
+	</script>
 </body>
 </html>

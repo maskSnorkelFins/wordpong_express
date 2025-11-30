@@ -97,23 +97,23 @@ class GameScene extends Phaser.Scene {
 
 		// text
 		console.log(this.gameWidthDIV2, this.gameHeightDIV2);
-		// this.propText = this.add.text(this.gameWidthDIV2, this.gameHeightDIV2, 'type to begin',
-		// 	{ fontSize: '30px', fontFamily: "Arial", fill: '#000', backgroundColor: "#ccc", align: 'center' }
-		// ).setOrigin(0.5, 0.5); // center-align text
-		this.wordInput = this.add.bitmapText(this.gameWidthDIV2, this.gameHeightDIV2, 'typewriter', // font key
-			"type to begin", 40).setOrigin(0.5, 0.5);
+		this.wordInput = this.add.text(this.gameWidthDIV2, this.gameHeightDIV2, 'type to begin',
+			{ fontSize: '36px', fontFamily: 'Newsreader36', fill: '#000', align: 'center' }
+		).setOrigin(0.5, 0.5); // center-align text
+		// this.wordInput = this.add.bitmapText(this.gameWidthDIV2, this.gameHeightDIV2, 'typewriter', // font key
+		// 	"type to begin", 40).setOrigin(0.5, 0.5);
 
-		// this.scoreText = this.add.text(16, 16, 'Score: ' + this.score,
-		// 	{ fontSize: '20px', fontFamily: "Arial", fill: '#000' }
-		// );
-		this.scoreOutput = this.add.bitmapText(16, 16, 'typewriter',
-			"score: 0", 25).setTintFill(0xffffff);
+		// this.scoreOutput = this.add.bitmapText(16, 16, 'typewriter',
+		// 	"score: 0", 25).setTintFill(0xffffff);
+		this.scoreOutput = this.add.text(16, 16, 'score: 0',
+				{ fontSize: '24px', fontFamily: 'Newsreader24', fill: '#000', align: 'center' }
+			).setTintFill(0xffffff);
 
-		// this.timeText = this.add.text(200, 16, "Time: 0",
-		// 	{ fontSize: '20px', fontFamily: "Arial", fill: '#000' }
-		// );
-		this.timeOutput = this.add.bitmapText(200, 16, 'typewriter',
-			"time: 0", 25).setTintFill(0xffffff);
+		// this.timeOutput = this.add.bitmapText(200, 16, 'typewriter',
+		// 	"time: 0", 25).setTintFill(0xffffff);
+		this.timeOutput = this.add.text(200, 16, 'time: 0',
+				{ fontSize: '24px', fontFamily: 'Newsreader24', fill: '#000', align: 'center' }
+			).setTintFill(0xffffff);
 
 
 

@@ -36,3 +36,4 @@ var config = {
 
 // instantiate game
 const game = new Phaser.Game(config);
+// return new Phaser.Game(config); // GPT rewrite 20251130
