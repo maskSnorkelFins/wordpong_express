@@ -6,7 +6,9 @@ const http = require('http').createServer(app); // CHANGED 20251128
 const { Server } = require('socket.io');
 const io = require('socket.io')(http); // CHANGED 20251128
 
-const fs = require('fs/promises'); // to load words.txt
+const fs = require('fs/promises'); // for loading words.txt
+const path = require('path');
+
 const CurrentWord = require("./CurrentWord");
 
 
@@ -107,9 +109,10 @@ function scoreWord(word) {
 
 
 async function loadDictionary() {
-    const text = await fs.readFile('./public/assets/words.txt', 'utf8');
+	const filePath = path.join(__dirname, 'words.txt');
+	const text = await fs.readFile(filePath, 'utf8');
 	for (const line of text.split("\n")) {
-		const word = line.replace(/^\uFEFF/, '')      // remove BOM
+		const word = line.replace(/^\uFEFF/, '') // remove BOM (byte order mark)
 			.split(',')[0] // remove comma + column
 			.replace(/\r/g, '') // remove carriage return
 			.trim()
