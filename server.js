@@ -102,10 +102,10 @@ io.on('connection', (socket) => {
 });
 
 
-// scoring
-function scoreWord(word) {
-	return word.length * 3;
-}
+// // scoring
+// function scoreWord(word) {
+// 	return word.length * 3;
+// }
 
 
 async function loadDictionary() {

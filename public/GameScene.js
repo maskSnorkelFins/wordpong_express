@@ -17,6 +17,7 @@ class GameScene extends Phaser.Scene {
 		this.scoreOutput;
 		this.timeOutput;
 		this.timer;
+		this.chooseAPattern;
 
 		// responsive design
 		this.gameWidth = GAME_SETTINGS.gameWidth;
@@ -65,10 +66,35 @@ class GameScene extends Phaser.Scene {
 		this.socket.on('updatePlayers', players => {
             console.log(players);
         });
+		this.socket.on('patternList', currentWordObj => {
+            console.log(currentWordObj);
+			//
+			//
+			// convert currentWordObj into string array
+			let patterns = Object.keys(currentWordObj);
+			let bools = Object.values(currentWordObj);
+			let patternsChoosable = [];
+
+			for (let i = 2; i < bools.length; i++) {//patterns/bools arrays start at 2
+				if (bools[i]
+					//&& !usedPatterns[patterns[i]]
+					//
+					// CHECK IF PATTERN ALREADY USED
+					//
+					) {
+					patternsChoosable.push(patterns[i]);
+				}
+			}
+			//
+			//
+			this.chooseAPattern = true;
+			this.showPatternBox(patternsChoosable);
+        });
 
 		// state
     	this.gameRunning = false;
 		this.propWord = "";
+		this.chooseAPattern = false;
 		this.score = 0;
 		this.elapsedTime = 0;
 
@@ -106,14 +132,32 @@ class GameScene extends Phaser.Scene {
 		// this.scoreOutput = this.add.bitmapText(16, 16, 'typewriter',
 		// 	"score: 0", 25).setTintFill(0xffffff);
 		this.scoreOutput = this.add.text(16, 16, 'score: 0',
-				{ fontSize: '24px', fontFamily: 'Newsreader24', fill: '#000', align: 'center' }
+				{ fontSize: '24px', fontFamily: 'Newsreader24', align: 'center' }
 			).setTintFill(0xffffff);
 
 		// this.timeOutput = this.add.bitmapText(200, 16, 'typewriter',
 		// 	"time: 0", 25).setTintFill(0xffffff);
 		this.timeOutput = this.add.text(200, 16, 'time: 0',
-				{ fontSize: '24px', fontFamily: 'Newsreader24', fill: '#000', align: 'center' }
+				{ fontSize: '24px', fontFamily: 'Newsreader24', align: 'center' }
 			).setTintFill(0xffffff);
+
+
+
+		// pre-create graphics + text
+		this.patternGraphic = this.add.graphics();
+		this.patternText = this.add.text(0, 0, "", {
+			fontSize: '24px',
+			fontFamily: 'Newsreader24',
+			color: '#fff',
+			lineSpacing: 6,
+			// wordWrap: { width: 300 }
+		});
+		// container
+		this.patternContainer = this.add.container(0, 0, [
+			this.patternGraphic,
+			this.patternText
+		]);
+		this.patternContainer.setVisible(false);
 
 
 
@@ -186,9 +230,19 @@ class GameScene extends Phaser.Scene {
 		console.log(`event.code: ${code}`);
 		// console.log(`event.key: ${event.key}`);
 
-
-		// if (code.startsWith('key') && code.length === 4) {
-		if (code.startsWith('key')) {
+		if (this.chooseAPattern) {
+			if (code.startsWith('digit')) {
+				console.log(`\n\n${code.charAt(5)} pattern selected\n\n`);
+				this.hidePatternBox();
+				this.chooseAPattern = false;
+				this.propWord = "";
+			} else {
+				//
+				// add on-screen reminder to select a pattern
+				//
+				console.log("\n\nSELECT A PATTERN");
+			}
+		} else if (code.startsWith('key')) {
 			let rand;
 			do {
 				rand = Phaser.Math.Between(0, this.typeSounds.length - 1);
@@ -209,12 +263,67 @@ class GameScene extends Phaser.Scene {
 			//
 			socket.emit('submitWord', this.propWord);// EVALUATE WORD
 			//
-			this.propWord = "";
 		}
 		// else if (/^Key[A-Z]$/.test(code)) {
 		// 	// console.log("ascii in alphabet range");
 		// 	this.propWord += code.charAt(3).toLowerCase();
 		// }
+	}
+
+
+	// slide up
+	showPatternBox(patterns) {
+		// const lines = patterns.join("\n");
+		const lines = patterns.map((p, i) => `${i + 1}   ${p}`).join("\n");
+		this.patternText.setText(lines);
+
+		// measure text
+		const padding = 20;
+		const boxWidth = 300;
+		const textBounds = this.patternText.getBounds();
+		const boxHeight = textBounds.height + padding * 2;
+
+		// redraw background
+		this.patternGraphic.clear();
+		this.patternGraphic.fillStyle(0x000000, 0.75);
+		this.patternGraphic.fillRoundedRect(0, 0, boxWidth, boxHeight, 12);
+
+		// position text inside box
+		this.patternText.setPosition(padding, padding);
+
+		// compute the right edge of the wordInput text
+		const wordInputBounds = this.wordInput.getBounds();
+		const spacing = 20; // space between wordInput and pattern box
+		const finalX = wordInputBounds.right + spacing;
+		const finalY = this.wordInput.y - boxHeight/2;
+
+		// Start BELOW the screen
+		const startY = this.gameHeight + 50;
+
+		// Set starting position
+		this.patternContainer.setX(finalX);
+		this.patternContainer.setY(startY);
+		this.patternContainer.setVisible(true);
+
+		// animate upward
+		this.tweens.add({
+			targets: this.patternContainer,
+			y: finalY,
+			ease: "Cubic.easeOut",
+			duration: 500
+		});
+	}
+	// hide
+	hidePatternBox() {
+		this.tweens.add({
+			targets: this.patternContainer,
+			alpha: 0,
+			duration: 200,
+			onComplete: () => {
+				this.patternContainer.setVisible(false);
+				this.patternContainer.setAlpha(1);
+			}
+		});
 	}
 
 }
